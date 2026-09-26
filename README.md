@@ -1,7 +1,5 @@
 # Kanji Battle
 
-**Repo:** [github.com/crsolver/kanji-battle](https://github.com/crsolver/kanji-battle)
-
 A pixel-art game for learning to **recognise kanji by their first meaning**. Robots carry the kanji, your hero slashes them when you answer right, and a spaced-repetition scheduler brings the hard ones back more often. It is built around one problem: confusing kanji that look or mean alike.
 
 Everything runs in the browser and your progress is saved locally. There is no server and no account.

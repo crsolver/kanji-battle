@@ -658,3 +658,18 @@ table.cards tr.unseen { opacity: 0.4; }
 .ask.study .readings .kanji { font-size: 1.6rem; color: var(--good); }
 input.nudge { border-color: var(--bad); animation: nudge 0.3s steps(4); }
 @keyframes nudge { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+/* ---------- Link that looks like a small button ---------- */
+a.linkbtn {
+  background: #2c2450;
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  box-shadow: 3px 3px 0 #000;
+  padding: 8px 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.6rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+a.linkbtn:hover { background: var(--accent); color: var(--line); }
+a.linkbtn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }

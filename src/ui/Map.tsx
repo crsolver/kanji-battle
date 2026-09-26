@@ -12,6 +12,8 @@ import { levelInfo } from '../progress/xp'
 import { liveStreak } from '../progress/streak'
 import { Flame, Lock, Stars } from './Pixel'
 
+const REPO_URL = 'https://github.com/crsolver/kanji-battle'
+
 const pct = (n: number) => `${Math.round(n * 100)}%`
 
 function download(name: string, text: string) {
@@ -192,6 +194,9 @@ export function MapScreen() {
         >
           RESET
         </button>
+        <a className="linkbtn" href={REPO_URL} target="_blank" rel="noopener noreferrer" title="Source code on GitHub">
+          GITHUB
+        </a>
         <input ref={fileRef} type="file" accept="application/json" hidden onChange={(e) => onImport(e.target.files?.[0])} />
         {message && <span className="dim">{message}</span>}
       </footer>
