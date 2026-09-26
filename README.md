@@ -81,8 +81,10 @@ In dev mode only, `window.__kb` is available in the browser console: `passChapte
 
 ## Data
 
-The kanji list (2,495 entries: readings and meanings per JLPT level) comes from the KanaDojo project's kanji data. Check KanaDojo's license before redistributing it.
+The kanji list (2,495 entries: readings and meanings per JLPT level) comes from the KanaDojo project's kanji data, which is AGPL-3.0 (see License below).
 
 ## License
 
-The code is released under the [MIT License](LICENSE). The kanji data in `src/data/kanji/` comes from KanaDojo and is not covered by it: it keeps its own license.
+Copyright (C) 2026 crsolver. Released under the [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0).
+
+The kanji data comes from KanaDojo, which is AGPL-3.0, and it is bundled into the app, so the whole project is AGPL-3.0 too. In practice: you can use, change and share it freely, but a modified version must stay under the same license, and if you run a modified version as a website you must offer your users its source code. The **GITHUB** button in the app links to the source.
