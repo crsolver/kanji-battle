@@ -673,3 +673,25 @@ a.linkbtn {
 }
 a.linkbtn:hover { background: var(--accent); color: var(--line); }
 a.linkbtn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
+
+.about { max-width: 720px; text-align: left; }
+.about summary { cursor: pointer; color: var(--accent); }
+.about p { margin: 8px 0 0; font-size: 1.05rem; line-height: 1.4; }
+.about { display: block; }
+.about summary { display: block; list-style: none; margin-bottom: 4px; }
+.about summary::-webkit-details-marker { display: none; }
+.about summary::before { content: '▾ '; }
+.about:not([open]) summary::before { content: '▸ '; }
+.about:not([open]) summary { margin-bottom: 0; }
+
+.robot.pickable { cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+button.continue { align-self: center; font-size: 1rem; padding: 12px 20px; min-height: 44px; }
+
+table.cards td:nth-child(4), table.cards td:nth-child(5) { white-space: nowrap; }
+@media (max-width: 520px) {
+  table.cards { font-size: 0.95rem; }
+  table.cards th, table.cards td { padding: 6px 4px; }
+  table.cards td.k { font-size: 1.6rem; width: 40px; }
+  table.cards th:nth-child(8), table.cards td:nth-child(8) { display: none; }
+  .worlds { display: grid; grid-template-columns: repeat(3, 1fr); }
+}

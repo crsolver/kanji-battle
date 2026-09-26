@@ -41,12 +41,14 @@ function Enemies({
   picked = null,
   showAnswer = false,
   lunge = false,
+  onPick,
 }: {
   question: Question
   phase: 'live' | 'dying'
   picked?: number | null
   showAnswer?: boolean
   lunge?: boolean
+  onPick?: (i: number) => void
 }) {
   const correct = correctIndexOf(question)
   if (question.kind !== 'pick') {
@@ -76,6 +78,7 @@ function Enemies({
             mini
             className={cls}
             keyLabel={PICK_KEYS[i].toUpperCase()}
+            onPick={phase === 'live' && onPick ? () => onPick(i) : undefined}
             burst={phase === 'dying' && i === correct}
           />
         )
@@ -305,6 +308,16 @@ export function Battle({
     [studyDone],
   )
 
+  const pickTile = useCallback(
+    (i: number) => {
+      if (question?.kind !== 'pick' || reveal || !question.options[i]) return
+      const chosen = question.options[i]
+      if (chosen.kanji === question.card.kanji) win()
+      else lose(question.card, chosen, i)
+    },
+    [question, reveal, win, lose],
+  )
+
   // Tile keys (D F J K) for meaning -> kanji questions.
   useEffect(() => {
     if (question?.kind !== 'pick' || reveal) return
@@ -314,33 +327,35 @@ export function Battle({
       // Stop the key from being typed into the next question's input.
       e.preventDefault()
       if (e.repeat) return
-      const chosen = question.options[i]
-      if (chosen.kanji === question.card.kanji) win()
-      else lose(question.card, chosen, i)
+      pickTile(i)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [question, reveal, win, lose])
+  }, [question, reveal, pickTile])
 
   // Enter continues after a wrong answer. The listener is attached a tick late
   // so the Enter that submitted the wrong answer can't also dismiss the reveal.
+  const goOn = useCallback(() => {
+    setReveal(null)
+    setPicked(null)
+    setEnterDelay(0)
+    if (hp <= 0) return finish(false)
+    next(queue)
+  }, [next, queue, hp, finish])
+
   useEffect(() => {
     if (!reveal) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Enter' || e.repeat) return
       e.preventDefault()
-      setReveal(null)
-      setPicked(null)
-      setEnterDelay(0)
-      if (hp <= 0) return finish(false)
-      next(queue)
+      goOn()
     }
     const t = setTimeout(() => window.addEventListener('keydown', onKey), 0)
     return () => {
       clearTimeout(t)
       window.removeEventListener('keydown', onKey)
     }
-  }, [reveal, next, queue, hp, finish])
+  }, [reveal, goOn])
 
   useEffect(() => {
     if (!reveal && (question?.kind === 'type' || question?.kind === 'study')) inputRef.current?.focus()
@@ -383,6 +398,7 @@ export function Battle({
                 picked={picked}
                 showAnswer={!!reveal}
                 lunge={!!reveal && question.kind === 'type'}
+                onPick={reveal ? undefined : pickTile}
               />
             </div>
           )}
@@ -418,7 +434,7 @@ export function Battle({
                 {reveal.mistaken.meaning}
               </div>
             )}
-            <div className="hint blink">PRESS ENTER</div>
+            <button className="continue blink" onClick={goOn}>PRESS ENTER</button>
           </div>
         ) : question?.kind === 'study' ? (
           <div className="ask study">
@@ -466,7 +482,7 @@ export function Battle({
         ) : question?.kind === 'pick' ? (
           <div className="ask">
             <div className="prompt">{question.card.meaning}</div>
-            <div className="hint">which robot? press D · F · J · K</div>
+            <div className="hint">which robot? tap it, or press D · F · J · K</div>
           </div>
         ) : null}
       </div>

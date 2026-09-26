@@ -171,25 +171,29 @@ export function Duel({ session, onFinish }: { session: Session; onFinish: (r: Se
   }, [answer])
 
   // Enter continues after a miss (attached a tick late so it can't fire on the same key press).
+  const goOn = useCallback(() => {
+    setReveal(null)
+    setPicked(null)
+    if (hp <= 0) return finish(false, 0)
+    const next = nextQuestion(pair, recent.current)
+    recent.current.push(next.target.kanji)
+    setQ(next)
+    startedAt.current = Date.now()
+  }, [hp, pair, finish])
+
   useEffect(() => {
     if (!reveal) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Enter' || e.repeat) return
       e.preventDefault()
-      setReveal(null)
-      setPicked(null)
-      if (hp <= 0) return finish(false, 0)
-      const next = nextQuestion(pair, recent.current)
-      recent.current.push(next.target.kanji)
-      setQ(next)
-      startedAt.current = Date.now()
+      goOn()
     }
     const t = setTimeout(() => window.addEventListener('keydown', onKey), 0)
     return () => {
       clearTimeout(t)
       window.removeEventListener('keydown', onKey)
     }
-  }, [reveal, hp, pair, finish])
+  }, [reveal, goOn])
 
   const correctIndex = q.order.findIndex((c) => c.kanji === q.target.kanji)
 
@@ -221,7 +225,7 @@ export function Duel({ session, onFinish }: { session: Session; onFinish: (r: Se
                 if (i === picked) cls += ' wrong'
                 if (i === correctIndex) cls += ' answer'
               }
-              return <Robot key={card.kanji} card={card} className={cls} keyLabel={KEYS[i].toUpperCase()} burst={won} />
+              return <Robot key={card.kanji} card={card} className={cls} keyLabel={KEYS[i].toUpperCase()} burst={won} onPick={reveal || won ? undefined : () => answer(i)} />
             })}
           </div>
 
@@ -255,12 +259,12 @@ export function Duel({ session, onFinish }: { session: Session; onFinish: (r: Se
               ))}
             </div>
             <div className="hint">The answer for “{reveal.target.meaning}” is {reveal.target.kanji}. Streak reset.</div>
-            <div className="hint blink">PRESS ENTER</div>
+            <button className="continue blink" onClick={goOn}>PRESS ENTER</button>
           </div>
         ) : (
           <div className="ask">
             <div className="prompt">{q.target.meaning}</div>
-            <div className="hint">D = left · K = right — {BOSS_STREAK - streak} more in a row</div>
+            <div className="hint">tap a robot, or D = left · K = right — {BOSS_STREAK - streak} more in a row</div>
           </div>
         )}
       </div>

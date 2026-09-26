@@ -14,6 +14,14 @@ import { Flame, Lock, Stars } from './Pixel'
 
 const REPO_URL = 'https://github.com/crsolver/kanji-battle'
 
+const ABOUT_KEY = 'kb-about-seen'
+const readAbout = () => {
+  try { return localStorage.getItem(ABOUT_KEY) === '1' } catch { return false }
+}
+const rememberAbout = () => {
+  try { localStorage.setItem(ABOUT_KEY, '1') } catch { /* private mode: it just shows again */ }
+}
+
 const pct = (n: number) => `${Math.round(n * 100)}%`
 
 function download(name: string, text: string) {
@@ -29,6 +37,7 @@ export function MapScreen() {
   const { progress, world, setWorld, startChapter, startReview, startBoss, startAllBosses, saved, resumeChapter, goto, exportBackup, importBackup, resetAll } = useApp()
   const [picked, setPicked] = useState<string | null>(null)
   const [message, setMessage] = useState('')
+  const [seenAbout] = useState(readAbout)
   const fileRef = useRef<HTMLInputElement>(null)
   const due = useMemo(() => dueCards(progress, Date.now()).length, [progress])
   const allBosses = useMemo(() => activeBosses(progress), [progress])
@@ -184,6 +193,18 @@ export function MapScreen() {
           )
         })()}
       </section>
+
+      <details className="dialog about" open={!seenAbout} onToggle={(e) => e.currentTarget.open || rememberAbout()}>
+        <summary className="pixel-text">WHAT IS THIS?</summary>
+        <p>
+          Kanji Battle trains you to <b>recognise kanji by their first meaning</b>. Robots carry a kanji: type its
+          meaning and press Enter to slash it. Sometimes you get the reverse and pick the right kanji with D F J K.
+        </p>
+        <p>
+          Hard kanji come back more often (spaced repetition). When you mix up two kanji, that pair becomes a
+          <b> boss duel</b> so you learn to tell them apart. Clear chapters to unlock the next ones, from N5 up to N1.
+        </p>
+      </details>
 
       <footer className="data-tools">
         <button className="small" onClick={async () => download('kanji-battle-backup.json', await exportBackup())}>EXPORT</button>

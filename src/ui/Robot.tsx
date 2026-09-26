@@ -45,17 +45,21 @@ export function Robot({
   className = '',
   keyLabel,
   burst,
+  onPick,
 }: {
   card: Card
   mini?: boolean
   className?: string
   keyLabel?: string
   burst?: boolean
+  /** Tap / click to choose this robot (touch screens have no D F J K). */
+  onPick?: () => void
 }) {
   const look = useMemo(() => robotURL(card.kanji), [card.kanji])
   return (
     <div
-      className={`robot${mini ? ' mini' : ''} ${className}`}
+      className={`robot${mini ? ' mini' : ''}${onPick ? ' pickable' : ''} ${className}`}
+      onPointerDown={onPick ? (e) => { e.preventDefault(); onPick() } : undefined}
       style={{ '--kanji': look.palette.kanji } as CSSProperties}
     >
       <div className="robot-inner">
