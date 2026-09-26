@@ -82,3 +82,7 @@ In dev mode only, `window.__kb` is available in the browser console: `passChapte
 ## Data
 
 The kanji list (2,495 entries: readings and meanings per JLPT level) comes from the KanaDojo project's kanji data. Check KanaDojo's license before redistributing it.
+
+## License
+
+The code is released under the [MIT License](LICENSE). The kanji data in `src/data/kanji/` comes from KanaDojo and is not covered by it: it keeps its own license.
